@@ -60,3 +60,32 @@ func TestValidateStruct(t *testing.T) {
 		t.Fatal("attempted to validate non-struct")
 	}
 }
+
+type TSEdge struct {
+	BigNum         int64   `validator:"gt=1"`          // unsupported numeric type -> vCompareNumber default
+	BadIntCmp      int     `validator:"gt=abc"`        // prepInts parse failure
+	BadFloatCmp    float64 `validator:"gt=abc"`        // prepFloats parse failure
+	EmailNonString int     `validator:"email"`         // email on non-string field
+	PetPtr         *string `validator:"oneof=cat,dog"` // oneof pointer handling
+}
+
+func TestValidateStructEdgeCases(t *testing.T) {
+	err := ValidateStruct(TSEdge{}) // nil PetPtr exercises the oneof nil-pointer branch
+	if err == nil {
+		t.Fatal("expected validation errors for edge struct")
+	}
+	for _, want := range []string{
+		"failed the comparison",
+		"unable to validate email addresses on non-string field",
+		"does not contain a value on the list of allowed values",
+	} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("expected error to contain %q, got %q", want, err.Error())
+		}
+	}
+
+	pet := "cat" // non-nil pointer exercises the oneof deref path
+	if err := ValidateStruct(TSEdge{PetPtr: &pet}); err == nil {
+		t.Error("expected errors from the other fields even with a valid PetPtr")
+	}
+}

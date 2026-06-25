@@ -1,6 +1,7 @@
 package validator
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -65,5 +66,44 @@ func TestCompareInts(t *testing.T) {
 	}
 	if compareInts(1, 1, "are these equal to each other?") {
 		t.Fatal("nonsense comparison int")
+	}
+}
+
+func TestPrepFloats(t *testing.T) {
+	if _, _, ok := prepFloats(reflect.ValueOf(1.5), "2.5"); !ok {
+		t.Error("happy path should succeed")
+	}
+	if _, _, ok := prepFloats(reflect.ValueOf("notafloat"), "2.5"); ok {
+		t.Error("non-float field should fail")
+	}
+	if _, _, ok := prepFloats(reflect.ValueOf(1.5), "notanumber"); ok {
+		t.Error("unparseable subtag should fail")
+	}
+}
+
+func TestPrepInts(t *testing.T) {
+	if _, _, ok := prepInts(reflect.ValueOf(3), "5"); !ok {
+		t.Error("happy path should succeed")
+	}
+	if _, _, ok := prepInts(reflect.ValueOf("notanint"), "5"); ok {
+		t.Error("non-int field should fail")
+	}
+	if _, _, ok := prepInts(reflect.ValueOf(3), "notanumber"); ok {
+		t.Error("unparseable subtag should fail")
+	}
+}
+
+func TestGetMultipleTagParts(t *testing.T) {
+	type single struct {
+		A string `validator:"required"`
+	}
+	type multi struct {
+		A string `validator:"required;email"`
+	}
+	if parts := getMultipleTagParts(reflect.TypeOf(single{}).Field(0)); parts != nil {
+		t.Errorf("single-rule tag should return nil, got %v", parts)
+	}
+	if parts := getMultipleTagParts(reflect.TypeOf(multi{}).Field(0)); len(parts) != 2 {
+		t.Errorf("expected 2 parsed parts, got %d", len(parts))
 	}
 }
