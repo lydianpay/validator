@@ -1,5 +1,5 @@
 # Pinned golangci-lint version — matches the org CI default (lydianpay/ci qlty-backend.yml).
-GOLANGCI := go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.1
+GOLANGCI := go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.15.0
 
 .PHONY: build test lint tidy
 

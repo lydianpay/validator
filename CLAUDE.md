@@ -2,7 +2,7 @@
 
 ## Overview
 A small, zero-dependency struct validator for Go. Public module
-`github.com/lydianpay/validator`, Go 1.24.5.
+`github.com/lydianpay/validator`, Go 1.27.3.
 
 ## API
 - `ValidateStruct(input any) error` — reflects over a struct (or pointer to
