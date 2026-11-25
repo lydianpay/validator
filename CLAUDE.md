@@ -12,10 +12,11 @@ A small, zero-dependency struct validator for Go. Public module
   field, its type, and its validator tag.
 
 ## Tag vocabulary (constants.go)
-`required`, `email`, `exact=`, `oneof=a,b,c`, and numeric comparisons
-`eq=`/`gt=`/`gte=`/`lt=`/`lte=` (int and float64). Combine rules on one field
-with `;`; separate `oneof` choices with `,`. An empty/absent tag is a no-op; a
-malformed tag is reported as an error.
+`required`, `email`, `hostname`, `exact=`, `oneof=a,b,c`, and numeric
+comparisons `eq=`/`gt=`/`gte=`/`lt=`/`lte=` (int and float64). `hostname` lets
+an empty string or nil pointer through, so pair it with `required` to demand a
+hostname. Combine rules on one field with `;`; separate `oneof` choices with
+`,`. An empty/absent tag is a no-op; a malformed tag is reported as an error.
 
 ## Layout
 - `constants.go` — tag names and separators.
