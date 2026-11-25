@@ -14,6 +14,7 @@ const (
 	VLessThan               = "lt="           // Example MyField int `validator:"lt=100"`
 	VOneOf                  = "oneof="        // Example MyChoice string `validator:"oneof=cat,dog,raccoon,possum"`
 	VEmail                  = "email"         // Example MyEmail string `validator:"email"`
+	VHostname               = "hostname"      // Example MyHostname string `validator:"hostname"`
 	vInvalid                = "bad tag"       // Intentionally not exported. Used for switch/case control
 	vNoTag                  = "no tag"        // Intentionally not exported. Used for switch/case control
 	vMultipleTags           = "multiple tags" // Intentionally not exported. Used for switch/case control

@@ -62,7 +62,7 @@ func getTagPartsFromField(field reflect.StructField) (string, string) {
 }
 
 func getTagPartsFromEntireTag(entireTag string) (string, string) {
-	if entireTag == VRequired || entireTag == VEmail {
+	if entireTag == VRequired || entireTag == VEmail || entireTag == VHostname {
 		return entireTag, ""
 	}
 	parts := strings.Split(entireTag, TagSeparator)

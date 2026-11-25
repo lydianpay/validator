@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"net/mail"
 	"reflect"
+	"regexp"
 	"slices"
 	"strings"
 )
+
+var hostnamePattern = regexp.MustCompile(`^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$`)
 
 func ValidateStruct(input any) error {
 	if !isStruct(input) {
@@ -58,6 +61,10 @@ func validateField(fieldVal, dereffedInput reflect.Value, baselineField reflect.
 		} else if _, err := mail.ParseAddress(fieldVal.String()); err != nil {
 			problems = append(problems, fmt.Sprintf("invalid email address for field %s", baselineField.Name))
 		}
+	case VHostname:
+		if !vHostname(fieldVal) {
+			problems = append(problems, fmt.Sprintf("field '%s' is not a valid hostname", baselineField.Name))
+		}
 	case vMultipleTags:
 		multi := getMultipleTagParts(baselineField)
 		multiProbs := []string{}
@@ -107,4 +114,18 @@ func vOneOf(fieldVal reflect.Value, param string) (bool, string) {
 		fieldVal = fieldVal.Elem()
 	}
 	return slices.Contains(allowed, fieldVal.String()), param
+}
+
+func vHostname(fieldVal reflect.Value) bool {
+	if fieldVal.Kind() == reflect.Pointer {
+		if fieldVal.IsNil() {
+			return true
+		}
+		fieldVal = fieldVal.Elem()
+	}
+	if fieldVal.Kind() != reflect.String {
+		return false
+	}
+	hostname := fieldVal.String()
+	return hostname == "" || (len(hostname) <= 253 && hostnamePattern.MatchString(hostname))
 }

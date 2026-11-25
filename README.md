@@ -44,6 +44,7 @@ func main() {
 |-----|---------|
 | `required` | field must be non-zero |
 | `email` | valid email address (string fields) |
+| `hostname` | hostname with at least one dot, such as `checkout.example.com` (string or `*string` fields); no scheme, path, port or single label like `localhost`; an empty string or nil pointer passes, so pair with `required` to demand one |
 | `exact=value` | string equals the given value |
 | `oneof=a,b,c` | value is one of the listed options |
 | `eq=` `gt=` `gte=` `lt=` `lte=` | numeric comparison (int, float64) |
